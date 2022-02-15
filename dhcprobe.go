@@ -100,7 +100,10 @@ func DetectDHCPs(iface *net.Interface, timeout time.Duration) (int, error) {
 	for {
 		n, _, err := conn.ReadFrom(recvBuf)
 
-		if err != nil && !errors.Is(err, os.ErrDeadlineExceeded) {
+		if err != nil && errors.Is(err, os.ErrDeadlineExceeded) {
+			break
+		}
+		if err != nil {
 			return wrap("failed to read DHCP response", err)
 		}
 
